@@ -11,17 +11,24 @@ public class UIManager : Singleton<UIManager>
     {
 	    mm = GetComponentInChildren<MainMenu>();
 	    _dummyCamera = GetComponentInChildren<Camera>();
+	   
     }
 
     // Update is called once per frame
     void Update()
-    {
+	{
+		if(GameManager.Instance.currentGamestate != GameManager.GameState.PREGAME)
+		{
+			return;
+		}
 	    if(Input.GetKeyDown(KeyCode.Space))
 	    {
-	    	mm.FadeOut();
+	    	GameManager.Instance.StartGame();
+	    	//mm.FadeOut();
 	    }
     }
     
+
 	public void SetDummyCameraActive(bool active)
 	{
 		_dummyCamera.gameObject.SetActive(active);

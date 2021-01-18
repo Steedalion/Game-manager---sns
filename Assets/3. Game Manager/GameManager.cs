@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+
+[System.Serializable]
+public class EventGameState : UnityEvent<GameManager.GameState, GameManager.GameState> {};
+
 public class GameManager : Singleton<GameManager>
 {
 	//TODO
@@ -11,13 +16,41 @@ public class GameManager : Singleton<GameManager>
 	
 	public GameObject[] systemPrefabs;
 	List<GameObject> _systems;
+	public EventGameState OnGameStateChange;
 	
 	# region gameState
+	public GameState currentGamestate {get; private set;}= GameState.PREGAME;
+	
 	public enum GameState{
 		PREGAME,
 		RUNNING,
 		PAUSED
 	}
+	
+	void UpdateGamestate(GameState state)
+	{
+		GameState previousState = currentGamestate;
+		currentGamestate = state;
+		
+		switch (currentGamestate)
+		{
+			
+		case GameState.PREGAME:
+			break;
+			
+		case GameState.RUNNING:
+			break;
+				
+		case GameState.PAUSED:
+			break;
+		
+		default:
+			break;
+		}
+		
+		OnGameStateChange.Invoke(currentGamestate, previousState);
+	}
+	
 	#endregion
 	
 	#region level control
@@ -28,8 +61,14 @@ public class GameManager : Singleton<GameManager>
 		if(_loadOperationComplete.Contains(ao))
 		{
 			_loadOperationComplete.Remove(ao);
+			
+			if (_loadOperationComplete.Count == 0)
+			{
+				UpdateGamestate(GameState.RUNNING);
+				Debug.Log("Load level Complete");
+			}
 		}
-		Debug.Log("Loadlevel Complete");
+		Debug.Log("Load level Complete");
 	}
 	private void OnUnloadLevelComplete(AsyncOperation ao)
 	{
@@ -93,7 +132,7 @@ public class GameManager : Singleton<GameManager>
 		
 		InstantiateSystems();
 		
-		LoadLevel("Main");
+
 	}
 	
 	// This function is called when the MonoBehaviour will be destroyed.
@@ -101,5 +140,11 @@ public class GameManager : Singleton<GameManager>
 	{
 		base.OnDestroy();
 		DestroySystems();
+	}
+	
+	
+	public void StartGame()
+	{
+		LoadLevel("Main");
 	}
 }
