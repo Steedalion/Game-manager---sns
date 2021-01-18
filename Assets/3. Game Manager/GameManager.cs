@@ -9,10 +9,14 @@ public class EventGameState : UnityEvent<GameManager.GameState, GameManager.Game
 
 public class GameManager : Singleton<GameManager>
 {
-	//TODO
-	//Load unload game levels
-	//keep track of game state
-	//generate other persistant system.
+	//Todo
+	/// <summary>
+	/// 
+	/// Trigger method via escape key
+	/// Trigger method via pause menu
+	/// Pause simulation
+	/// modify cursor when paused.
+	/// </summary>
 	
 	public GameObject[] systemPrefabs;
 	List<GameObject> _systems;
@@ -36,12 +40,15 @@ public class GameManager : Singleton<GameManager>
 		{
 			
 		case GameState.PREGAME:
+			Time.timeScale = 1;
 			break;
 			
 		case GameState.RUNNING:
+			Time.timeScale = 1;
 			break;
 				
 		case GameState.PAUSED:
+			Time.timeScale = 0;
 			break;
 		
 		default:
@@ -49,6 +56,11 @@ public class GameManager : Singleton<GameManager>
 		}
 		
 		OnGameStateChange.Invoke(currentGamestate, previousState);
+	}
+	
+	public void TogglePause()
+	{
+		UpdateGamestate(currentGamestate == GameState.RUNNING? GameState.PAUSED : GameState.RUNNING);
 	}
 	
 	#endregion
@@ -61,11 +73,9 @@ public class GameManager : Singleton<GameManager>
 		if(_loadOperationComplete.Contains(ao))
 		{
 			_loadOperationComplete.Remove(ao);
-			Debug.Log("Load level "+ _loadOperationComplete.Count);
 			if (_loadOperationComplete.Count == 0)
 			{
 				UpdateGamestate(GameState.RUNNING);
-				Debug.Log("Load level Complete");
 			}
 		}
 		Debug.Log("Load level Complete");
@@ -134,6 +144,20 @@ public class GameManager : Singleton<GameManager>
 		InstantiateSystems();
 		
 
+	}
+	
+	// Update is called once per frame
+	void Update()
+	{
+		if(GameManager.Instance.currentGamestate == GameManager.GameState.PREGAME)
+		{
+			return;
+		}
+		if(Input.GetKeyDown(KeyCode.Escape))
+		{
+			GameManager.Instance.TogglePause();
+
+		}
 	}
 	
 	// This function is called when the MonoBehaviour will be destroyed.
