@@ -12,6 +12,13 @@ public class GameManager : Singleton<GameManager>
 	public GameObject[] systemPrefabs;
 	List<GameObject> _systems;
 	
+	# region gameState
+	public enum GameState{
+		PREGAME,
+		RUNNING,
+		PAUSED
+	}
+	#endregion
 	
 	#region level control
 	private string _currentScene = string.Empty;
