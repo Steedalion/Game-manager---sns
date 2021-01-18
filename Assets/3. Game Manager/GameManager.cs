@@ -61,7 +61,7 @@ public class GameManager : Singleton<GameManager>
 		if(_loadOperationComplete.Contains(ao))
 		{
 			_loadOperationComplete.Remove(ao);
-			
+			Debug.Log("Load level "+ _loadOperationComplete.Count);
 			if (_loadOperationComplete.Count == 0)
 			{
 				UpdateGamestate(GameState.RUNNING);
@@ -84,6 +84,7 @@ public class GameManager : Singleton<GameManager>
 			Debug.LogError(this.name+": Could not load level "+levelName);
 			return;
 		}
+		_loadOperationComplete.Add(ao);
 		ao.completed += OnLoadLevelComplete;
 	}
 	
