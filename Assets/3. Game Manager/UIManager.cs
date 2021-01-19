@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class UIManager : Singleton<UIManager>
 {
-	private MainMenu mm;
-	private PauseMenu pause;
-	private Camera _dummyCamera;
+	[SerializeField] private MainMenu mm;
+	[SerializeField] private PauseMenu pause;
+	[SerializeField] private Camera _dummyCamera;
     // Start is called before the first frame update
     void Start()
 	{
-		pause = GetComponentInChildren<PauseMenu>();
+		pause = GetComponentInChildren<PauseMenu>(true);
 	    mm = GetComponentInChildren<MainMenu>();
 	    _dummyCamera = GetComponentInChildren<Camera>();
 		
@@ -40,7 +40,7 @@ public class UIManager : Singleton<UIManager>
 	
 	public void HandleGameStateChange(GameManager.GameState current, GameManager.GameState previous)
 	{
-		//pause.gameObject.SetActive(current == GameManager.GameState.PAUSED);
+		pause.gameObject.SetActive(current == GameManager.GameState.PAUSED);
 		
 	}
 }
