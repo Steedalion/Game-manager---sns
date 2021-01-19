@@ -4,23 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
-[System.Serializable]
-public class EventGameState : UnityEvent<GameManager.GameState, GameManager.GameState> {};
 
 public class GameManager : Singleton<GameManager>
 {
-	//Todo
-	/// <summary>
-	/// 
-	/// Trigger method via escape key
-	/// Trigger method via pause menu
-	/// Pause simulation
-	/// modify cursor when paused.
-	/// </summary>
 	
 	public GameObject[] systemPrefabs;
 	List<GameObject> _systems;
-	public EventGameState OnGameStateChange;
+	public GameEvents.EventGameState OnGameStateChange;
 	
 	# region gameState
 	public GameState currentGamestate {get; private set;}= GameState.PREGAME;
@@ -94,6 +84,7 @@ public class GameManager : Singleton<GameManager>
 			Debug.LogError(this.name+": Could not load level "+levelName);
 			return;
 		}
+		_currentScene = levelName;
 		_loadOperationComplete.Add(ao);
 		ao.completed += OnLoadLevelComplete;
 	}
@@ -171,5 +162,25 @@ public class GameManager : Singleton<GameManager>
 	public void StartGame()
 	{
 		LoadLevel("Main");
+		UIManager.Instance.OnMainMenuFadeComplete.AddListener(HandleMainMenuFade);
+	}
+	
+	public void QuitGame()
+	{
+		Debug.Log("Quitting");
+		Application.Quit();
+	}
+	
+	public void RestartGame()
+	{
+		UpdateGamestate(GameState.PREGAME);
+	}
+	void HandleMainMenuFade(bool fadeout)
+	{
+		if(!fadeout){
+			UnloadLevel(_currentScene);
+		}
+		
+		
 	}
 }

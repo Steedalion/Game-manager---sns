@@ -11,6 +11,8 @@ public class PauseMenu : MonoBehaviour
     void Start()
     {
 	    resume.onClick.AddListener(HandleResume);
+	    restart.onClick.AddListener(HandleRestart);
+	    quit.onClick.AddListener(HandleQuit);
     }
 
     // Update is called once per frame
@@ -22,5 +24,12 @@ public class PauseMenu : MonoBehaviour
 	void HandleResume()
 	{
 		GameManager.Instance.TogglePause();
+	}
+	void HandleQuit(){
+		GameManager.Instance.QuitGame();
+	}
+	void HandleRestart()
+	{
+		GameManager.Instance.RestartGame();
 	}
 }

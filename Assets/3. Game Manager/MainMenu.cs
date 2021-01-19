@@ -12,6 +12,7 @@ public class MainMenu : MonoBehaviour
 	[SerializeField] private AnimationClip _fadeOutAnimation;
 	[SerializeField] private AnimationClip _fadeInAnimiation;
 	
+	public GameEvents.EventMenuFade OnMainMenuFadeComplete;
 	
 	// Start is called on the frame when a script is enabled just before any of the Update methods is called the first time.
 	protected void Start()
@@ -22,12 +23,13 @@ public class MainMenu : MonoBehaviour
 	public void OnFadeOutComplete()
 	{
 		Debug.LogWarning("Fading out complete");
-		
+		OnMainMenuFadeComplete.Invoke(true);
 	}
 	
-	public void OnFadeinComplete()
+	public void OnFadeInComplete()
 	{
 		Debug.LogWarning("Fading in complete");
+		OnMainMenuFadeComplete.Invoke(false);
 		
 	}
 	
@@ -51,6 +53,11 @@ public class MainMenu : MonoBehaviour
 		if(current == GameManager.GameState.RUNNING && previous == GameManager.GameState.PREGAME)
 		{
 			FadeOut();
+		}
+		
+		if(previous != GameManager.GameState.PREGAME && current == GameManager.GameState.PREGAME)
+		{
+			FadeIn();
 		}
 	}
 }
